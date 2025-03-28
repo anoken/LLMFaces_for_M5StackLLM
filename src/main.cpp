@@ -1,35 +1,55 @@
 /**
- * Copyright (c) 2025 aNoken
- **/
+ * @file M5Stack_LLM_Assistant.cpp
+ * @brief M5Stack LLM Assistant with FacesKeyboard (統合版)
+ * @version 0.1
+ * @date 2024-03-28
+ * 
+ * 
+ *
+ * This source code is taken from
+ * https://github.com/GOROman/LLMCardputer
+ *
+ * @Hardwares: M5Stack with M5Module-LLM and FacesKeyboard
+ * @Platform Version: Arduino M5Stack Board Manager v2.0.7
+ * @Dependent Library:
+ * M5GFX: https://github.com/m5stack/M5GFX
+ * M5Unified: https://github.com/m5stack/M5Unified
+ * M5Module-LLM: https://github.com/m5stack/M5Module-LLM
+ */
 
+//======================================================================
+// インクルード
+//======================================================================
 #include <M5GFX.h>
 #include <M5ModuleLLM.h>
 #include <M5Unified.h>
-
 #include <gob_unifiedButton.hpp>
-
 #include "config.h"
 #include "convertHiraganaTable.h"
 #include "sound.h"
 
+//======================================================================
+// 定数定義
+//======================================================================
 /** @brief シリアル通信ポート */
 #define CommSerialPort Serial
 /** @brief キーボード割り込みピン */
 #define FACESKEYBOARD_INTPIN 1
 
 // バッファサイズの定義
-// 受信バッファサイズ（デフォルトは256バイト）
-#define SERIAL_RX_BUFFER_SIZE 2048
-// 送信バッファサイズ（デフォルトは256バイト）
-#define SERIAL_TX_BUFFER_SIZE 2048
+#define SERIAL_RX_BUFFER_SIZE 2048  // 受信バッファサイズ（デフォルトは256バイト）
+#define SERIAL_TX_BUFFER_SIZE 2048  // 送信バッファサイズ（デフォルトは256バイト）
 
+//======================================================================
+// クラス定義
+//======================================================================
 /**
  * @brief FacesKeyboard クラスの実装
  * I2C通信を使用してキーボードモジュールと通信するクラス
  */
 namespace m5 {
-class I2C_Device;  
-class I2C_Class;   
+class I2C_Device;  // 前方宣言
+class I2C_Class;   // 前方宣言
 
 class FacesKeyboard_Class : public I2C_Device {
  public:
@@ -49,18 +69,17 @@ class FacesKeyboard_Class : public I2C_Device {
 };
 }  // namespace m5
 
+//======================================================================
+// グローバル変数
+//======================================================================
 using namespace m5;
 goblib::UnifiedButton unifiedButton;
 
-/** @brief グローバル変数 */
 // LLM関連
 static M5ModuleLLM module_llm;
 static String llm_work_id;
 static String question;
-static String question_hiragana;
-
-static String answer;
-static String data;
+static String answer = "";
 static bool task_llm_ready = false;
 static bool end_flag = false;
 
@@ -69,24 +88,26 @@ static M5Canvas canvas(&M5.Display);
 static portMUX_TYPE display_mutex = portMUX_INITIALIZER_UNLOCKED;
 static bool input_mode = true;
 static String input_buffer = "";
-static String received_question;
 static bool question_ok = false;
 
 // キーボード
 static FacesKeyboard_Class kbd;
 
+//======================================================================
+// ユーティリティ関数
+//======================================================================
 /**
  * @brief ビープ音を鳴らす
  */
-static void beep() { sound_play(SOUND_SQUARE, 440, 50); }
+static void beep() { 
+  sound_play(SOUND_SQUARE, 440, 50); 
+}
 
 /**
  * @brief エラーメッセージを表示
  * @param msg 表示するメッセージ
  */
 static void error_message(String msg) {
-  // CommSerialPort.println(msg);
-
   portENTER_CRITICAL_ISR(&display_mutex);
   canvas.setTextColor(WHITE, RED);
   canvas.println(msg);
@@ -104,7 +125,6 @@ static void error_message(String msg) {
  * @param lf 改行の有無
  */
 static void system_message(String msg, bool lf = true) {
-  // CommSerialPort.println(msg);
   portENTER_CRITICAL_ISR(&display_mutex);
   M5.Display.fillRect(0, M5.Display.height() - 28, M5.Display.width(), 28,
                       BLACK);
@@ -126,6 +146,9 @@ void clear() {
   portEXIT_CRITICAL_ISR(&display_mutex);
 }
 
+//======================================================================
+// LLM関連関数
+//======================================================================
 /**
  * @brief LLMの初期化
  * @param lang 使用する言語 ("en":英語, "jp":日本語)
@@ -135,9 +158,6 @@ static void LLM_setup(String lang) {
   int err = module_llm.sys.reset();
   if (err != MODULE_LLM_OK) {
     error_message("Error: Reset LLM failed");
-    // CommSerialPort.printf("error:%d", err);
-
-    // return;
   }
 
   // Setup LLM
@@ -151,7 +171,8 @@ static void LLM_setup(String lang) {
     if (lang == "en") {
       llm_config.prompt = "You are StackChan, a super cute robot.";
     } else if (lang == "jp") {
-      llm_config.prompt = "あなたは名前はスタックチャンです。";
+      llm_config.prompt =
+          "あなたはなまえはスタックチャンです。スーパーカワイイロボットです。";
     }
 
     llm_work_id = module_llm.llm.setup(llm_config);
@@ -172,86 +193,29 @@ static void LLM_setup(String lang) {
  * @param question 質問文
  */
 void talk(String question) {
-  // LLMモジュールに質問を送信し、推論結果を待つ
+  // Push question to LLM module and wait inference result
   module_llm.llm.inferenceAndWaitResult(
-      llm_work_id, question.c_str(), [](String &result) { answer += result; },
-      2000, "llm_inference");
+      llm_work_id, question.c_str(),
+      [](String &result) {
+        answer += result;
+      },
+      5000, "llm_inference");
   end_flag = true;
 }
 
+//======================================================================
+// UI関連関数
+//======================================================================
 /**
- * @brief LLM制御タスク
- * @param pvParameters タスクパラメータ(未使用)
+ * @brief 入力モードを表示
  */
-void task_llm(void *pvParameters) {
-  // モジュールの初期化
-  module_llm.begin(&Serial2);
+void show_input_mode() {
+  M5.Display.fillRect(0, M5.Display.height() - 28, M5.Display.width(), 28,
+                      BLACK);
+  M5.Display.setTextColor(WHITE);
 
-  // モジュールの接続確認
-  system_message("ModuleLLM connecting", false);
-
-  while (1) {
-    if (module_llm.checkConnection()) {
-      break;
-    }
-  }
-
-  LLM_setup("jp");
-  task_llm_ready = true;
-
-  while (1) {
-    module_llm.update();
-    vTaskDelay(100);
-  }
-}
-
-/**
- * @brief 回答表示タスク
- * @param pvParameters タスクパラメータ(未使用)
- */
-void task_print(void *pvParameters) {
-  while (1) {
-    String buffer = "";
-    int len = 0;
-
-    // answerからbufferへデータをコピーし、コピーした分を削除する
-    portENTER_CRITICAL_ISR(&display_mutex);
-    if (answer.length() > 0) {
-      buffer = answer;
-      len = answer.length();
-      answer = "";  // answerを空にする
-    }
-    portEXIT_CRITICAL_ISR(&display_mutex);
-
-    int count = 0;
-    for (int i = 0; i < len; i++) {
-      // 1文字づつ表示
-      String str = buffer.substring(i, i + 1);
-      if (str == " " || str == "?") {
-        // スペースや疑問符の場合は効果音なし
-      } else {
-        count++;
-        if (count % 2 == 1) {
-          // 喋ってる風のSE
-          sound_play(SOUND_SQUARE, 888, 33);  // 888Hz(A5)
-          vTaskDelay(33);
-        }
-      }
-      portENTER_CRITICAL_ISR(&display_mutex);
-      canvas.setTextColor(GREEN);
-      canvas.printf("%s", str.c_str());
-      canvas.pushSprite(4, 4);
-
-      portEXIT_CRITICAL_ISR(&display_mutex);
-      vTaskDelay(5);  // 短い遅延を入れてwatchdogのリセット機会を与える
-    }
-
-    if (end_flag && (len == 0)) {
-      sound_play_SE(SOUND_SE_END);
-      end_flag = false;
-    }
-    vTaskDelay(33);
-  }
+  String display_text = ">" + input_buffer;
+  M5.Display.drawString(display_text, 4, M5.Display.height() - 24);
 }
 
 /**
@@ -279,7 +243,6 @@ static void startup_animation() {
         SOUND_VOLUME = 0;
       }
       M5.Speaker.setVolume(SOUND_VOLUME);
-      // CommSerialPort.printf("Volume: %d\n", SOUND_VOLUME);
     }
 
     if (M5.BtnC.wasPressed()) {
@@ -289,7 +252,6 @@ static void startup_animation() {
         SOUND_VOLUME = 0;
       }
       M5.Speaker.setVolume(SOUND_VOLUME);
-      // CommSerialPort.printf("Volume: %d\n", SOUND_VOLUME);
     }
 
     portENTER_CRITICAL_ISR(&display_mutex);
@@ -322,18 +284,9 @@ static void startup_animation() {
   clear();
 }
 
-/**
- * @brief 入力モードを表示
- */
-void show_input_mode() {
-  M5.Display.fillRect(0, M5.Display.height() - 28, M5.Display.width(), 28,
-                      BLACK);
-  M5.Display.setTextColor(WHITE);
-
-  String display_text = ">" + input_buffer;
-  M5.Display.drawString(display_text, 4, M5.Display.height() - 24);
-}
-
+//======================================================================
+// 入力処理関数
+//======================================================================
 /**
  * @brief シリアル入力を処理
  */
@@ -403,6 +356,79 @@ void handle_keyboard_input() {
   }
 }
 
+//======================================================================
+// タスク関数
+//======================================================================
+/**
+ * @brief LLM制御タスク
+ * @param pvParameters タスクパラメータ(未使用)
+ */
+void task_llm(void *pvParameters) {
+  // モジュールの初期化
+  module_llm.begin(&Serial2);
+
+  // モジュールの接続確認
+  system_message("ModuleLLM connecting", false);
+
+  while (1) {
+    if (module_llm.checkConnection()) {
+      break;
+    }
+  }
+
+  LLM_setup("jp");
+  task_llm_ready = true;
+
+  while (1) {
+    module_llm.update();
+    vTaskDelay(100);
+  }
+}
+
+/**
+ * @brief 回答表示タスク
+ * @param pvParameters タスクパラメータ(未使用)
+ */
+void task_print(void *pvParameters) {
+  while (1) {
+    int len = answer.length();
+    String buffer = answer;
+    answer = "";
+
+    int count = 0;
+    for (int i = 0; i < len; i++) {
+      // 1文字づつ表示
+      String str = buffer.substring(i, i + 1);
+      if (str == ".") {
+        // スペースや疑問符の場合は効果音なし
+      } else {
+        count++;
+        if (count % 2 == 1) {
+          // 喋ってる風のSE
+          sound_play(SOUND_SQUARE, 888, 33);  // 888Hz(A5)
+          vTaskDelay(33);
+        }
+      }
+      portENTER_CRITICAL_ISR(&display_mutex);
+      canvas.setTextColor(GREEN);
+      canvas.printf("%s", str.c_str());
+      canvas.pushSprite(4, 4);
+
+      portEXIT_CRITICAL_ISR(&display_mutex);
+      vTaskDelay(50);  // 短い遅延を入れてwatchdogのリセット機会を与える
+    }
+
+    if (end_flag && (len == 0)) {
+      sound_play_SE(SOUND_SE_END);
+      end_flag = false;
+    }
+    vTaskDelay(50);
+  }
+}
+
+//======================================================================
+// Arduino メイン関数
+//======================================================================
 /**
  * @brief セットアップ
  */
@@ -456,7 +482,6 @@ void setup() {
 
   // タスクの作成
   xTaskCreate(task_llm, "task_llm", 4096, NULL, 1, NULL);
-  xTaskCreate(task_print, "task_print", 4096, NULL, 1, NULL);
 
   // 画面クリア
   clear();
@@ -470,11 +495,12 @@ void setup() {
 
   // 入力モードの表示
   show_input_mode();
+  xTaskCreate(task_print, "task_print", 4096, NULL, 1, NULL);
 
   CommSerialPort.print("SetUp End\n");
 
   // 初期の指示
-  talk("あなたの自己紹介をしてください.");
+  talk("あなたのなまえはなんですか？");
 }
 
 /**
@@ -511,13 +537,14 @@ void loop() {
 
     input_buffer = "";
     question_ok = false;
-    talk(question_hiragana);
+    talk(question);
   }
 
+  // ボリューム増加処理 (A ボタン)
   if (M5.BtnA.wasPressed()) {
     SOUND_VOLUME += 10;
     if (SOUND_VOLUME > SOUND_VOLUME_MAX) {
-      SOUND_VOLUME = 0;
+      SOUND_VOLUME = SOUND_VOLUME_MAX;
     }
     M5.Speaker.setVolume(SOUND_VOLUME);
 
@@ -536,6 +563,7 @@ void loop() {
     sound_play(SOUND_SQUARE, 440, 100);
   }
 
+  // ボリューム減少処理 (C ボタン)
   if (M5.BtnC.wasPressed()) {
     if (SOUND_VOLUME >= 10) {
       SOUND_VOLUME -= 10;
