@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2025 aNoken
- * @file M5Stack_LLM_Assistant.cpp
+ * @file main.cpp
  *
  * @Hardwares: M5Stack with M5Module-LLM and FacesKeyboard
  * @Platform Version: Arduino M5Stack Board Manager v2.0.7
