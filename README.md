@@ -4,7 +4,8 @@
 
 手のひらサイズローカルLLMマシン"LLMFaces_for_M5StackLLM"は、<br>
 @GOROman氏のLLMCardputer をベースにFaceKITキーボードと日本語入力に対応しました。<br>
-はんだ付け不要で、ドッキングするだけで使えます。
+はんだ付け不要！ドッキングするだけで使えます。<br>
+LLMCardputerのかっこいいピコピコ音で、ローカルLLMとの会話を楽しむことができます。<br>
 
 https://x.com/anoken2017/status/1905433935699738652
 
