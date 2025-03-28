@@ -1,20 +1,6 @@
 /**
- * @file M5Stack_LLM_Assistant.cpp
- * @brief M5Stack LLM Assistant with FacesKeyboard (統合版)
- * @version 0.1
- * @date 2024-03-28
- *
- * This source code is taken from
- * Original code by GOROman
- * https://github.com/GOROman/LLMCardputer
- *
- * @Hardwares: M5Stack with M5Module-LLM and FacesKeyboard
- * @Platform Version: Arduino M5Stack Board Manager v2.0.7
- * @Dependent Library:
- * M5GFX: https://github.com/m5stack/M5GFX
- * M5Unified: https://github.com/m5stack/M5Unified
- * M5Module-LLM: https://github.com/m5stack/M5Module-LLM
- */
+ * Copyright (c) 2025 aNoken
+ **/
 
 #include <M5GFX.h>
 #include <M5ModuleLLM.h>
