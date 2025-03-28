@@ -28,8 +28,8 @@
  * I2C通信を使用してキーボードモジュールと通信するクラス
  */
 namespace m5 {
-class I2C_Device;  // 前方宣言
-class I2C_Class;   // 前方宣言
+class I2C_Device;  
+class I2C_Class;   
 
 class FacesKeyboard_Class : public I2C_Device {
  public:
