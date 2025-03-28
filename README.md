@@ -29,11 +29,16 @@ https://docs.m5stack.com/en/module/Module-LLM
  - 所定の確率で、Module-LLMからの文字列が処理しきれず、表示から漏れるする不具合が残っています。
 
 # 参考
-https://github.com/GOROman/LLMCardputer<br>
-LLMCardputer のつくりかた:<br>
+@GOROman LLMCardputer https://github.com/GOROman/LLMCardputer<br>
+@GOROman@LLMCardputer のつくりかた:<br>
 https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer<br>
-ローカルLLMを手のひらサイズで動かしてみよう！ M5 Cardputer + ModuleLLM<br>
+@GOROman/ローカルLLMを手のひらサイズで動かしてみよう！ M5 Cardputer + ModuleLLM<br>
 https://qiita.com/GOROman/items/769bf17589d5661f7a70<br>
+
+@shikarunochi/M5Stack LLM Module に M5Facesキーボードから入力<br>
+https://gist.github.com/shikarunochi/a871ccf8ebf8f4c8601c8f6250640451<br>
+@devemin/LLM-Keyboard-M5Stack<br>
+https://gist.github.com/devemin/b798d606e9be8680673b89177269175e<br>
 
 # ライセンス
 MIT License
