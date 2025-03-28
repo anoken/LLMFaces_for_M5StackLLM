@@ -23,7 +23,10 @@ https://docs.m5stack.com/en/module/Module-LLM
 LLMが回答を生成し、テキストで応答します
 
 # 参考
-https://github.com/GOROman/LLMCardputer
-LLMCardputer のつくりかた:https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer
+https://github.com/GOROman/LLMCardputer<br>
+LLMCardputer のつくりかた:https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer<br>
+
+# ライセンス
+MIT License
 
 
