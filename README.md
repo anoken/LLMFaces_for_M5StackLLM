@@ -29,7 +29,10 @@ M5Stackのface_kitは現在、EOLになっています。
 
 # 参考
 https://github.com/GOROman/LLMCardputer<br>
-LLMCardputer のつくりかた:https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer<br>
+LLMCardputer のつくりかた:<br>
+https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer<br>
+ローカルLLMを手のひらサイズで動かしてみよう！ M5 Cardputer + ModuleLLM<br>
+https://qiita.com/GOROman/items/769bf17589d5661f7a70<br>
 
 # ライセンス
 MIT License
