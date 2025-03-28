@@ -26,7 +26,7 @@ https://docs.m5stack.com/en/module/Module-LLM
 
 # 注意
  - Face_kitは現在、EOL(生産終了)になっています。
- - 所定の確率で、Module-LLMからの文字列が処理しきれず、表示から漏れるする不具合が残っています。
+ - 所定の確率で、Module-LLMからの返信文字列が処理しきれず、画面表示から返信文字の表示が漏れるする不具合が残っています。
 
 # 参考
 @GOROman LLMCardputer https://github.com/GOROman/LLMCardputer<br>
