@@ -3,8 +3,7 @@
 ![image](https://github.com/user-attachments/assets/15309c27-53c9-4f46-a31a-ceca4d5adf76)
 
 手のひらサイズローカルLLMマシンは、
-@GOROman氏の#LLMCardputer をベースにFaceキーボードと日本語入力に対応しました。
-
+@GOROman氏の#LLMCardputer をベースにFaceKITキーボードと日本語入力に対応しました。
 
 # 用意するもの
 
@@ -12,10 +11,16 @@
 
  - M5Stack CoreS3
 https://docs.m5stack.com/en/core/CoreS3
- - face_kit
+ - face_kit(EOL)
 https://docs.m5stack.com/en/core/face_kit
  - Module-LLM
 https://docs.m5stack.com/en/module/Module-LLM
+
+# 使用方法
+ - M5Stack CoreS3、face_kit、Module-LLMを合体します。
+ - 電源を入れると起動アニメーションが表示され、ピロピロ音が鳴ります。AボタンとCボタンで音量調整できます。
+ - 起動したら、キーボードから質問を入力し、OKキーで送信します。ローマ字をひらがなに変換する費用
+LLMが回答を生成し、テキストで応答します
 
 # 参考
 https://github.com/GOROman/LLMCardputer
