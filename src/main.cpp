@@ -2,7 +2,7 @@
  * Copyright (c) 2025 aNoken
  * @file main.cpp
  *
- * @Hardwares: M5Stack with M5Module-LLM and FacesKeyboard
+ * @Hardwares: M5Stack CoreS3 with M5Module-LLM and FacesKeyboard
  * @Platform Version: Arduino M5Stack Board Manager v2.0.7
  * @Dependent Library:
  * M5GFX: https://github.com/m5stack/M5GFX
