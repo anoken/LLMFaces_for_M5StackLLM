@@ -41,6 +41,9 @@ https://gist.github.com/shikarunochi/a871ccf8ebf8f4c8601c8f6250640451<br>
 @devemin/LLM-Keyboard-M5Stack<br>
 https://gist.github.com/devemin/b798d606e9be8680673b89177269175e<br>
 
+@anoken/ModuleLLM_MAniaX<br>
+https://github.com/anoken/modulellm_maniax<br>
+
 # ライセンス
 MIT License
 
