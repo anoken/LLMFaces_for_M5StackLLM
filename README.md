@@ -25,7 +25,7 @@ https://docs.m5stack.com/en/module/Module-LLM
 　
 
 # 注意
-M5Stackのface_kitは現在、EOLになっています。
+Face_kitは現在、EOL(生産終了)になっています。
 
 # 参考
 https://github.com/GOROman/LLMCardputer<br>
