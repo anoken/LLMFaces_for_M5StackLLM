@@ -22,6 +22,9 @@ https://docs.m5stack.com/en/module/Module-LLM
  - 起動したら、キーボードから質問を入力し、OKキーで送信します。ローマ字をひらがなに変換する費用
 LLMが回答を生成し、テキストで応答します
 
+# 注意
+M5Stackのface_kitは現在、EOLになっています。
+
 # 参考
 https://github.com/GOROman/LLMCardputer<br>
 LLMCardputer のつくりかた:https://www.docswell.com/s/GOROman/5YDG9E-LLMCardputer<br>
