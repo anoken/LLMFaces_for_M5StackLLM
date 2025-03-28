@@ -13,7 +13,7 @@ https://x.com/anoken2017/status/1905433935699738652
 
  - M5Stack CoreS3
 https://docs.m5stack.com/en/core/CoreS3
- - face_kit(EOL)
+ - Faces Kit
 https://docs.m5stack.com/en/core/face_kit
  - Module-LLM
 https://docs.m5stack.com/en/module/Module-LLM
@@ -22,7 +22,6 @@ https://docs.m5stack.com/en/module/Module-LLM
  - M5Stack CoreS3、face_kit、Module-LLMを合体します。
  - 電源を入れると起動アニメーションが表示され、ピロピロ音が鳴ります。AボタンとCボタンで音量調整できます。
  - 起動したら、キーボードから質問を入力します。ローマ字は自動的にひらがなに変換されます。エンターキーで送信します。LLMが回答を生成し、テキストで応答します。
-　
 
 # 注意
 Face_kitは現在、EOL(生産終了)になっています。
