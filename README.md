@@ -24,7 +24,8 @@ https://docs.m5stack.com/en/module/Module-LLM
  - 起動したら、キーボードから質問を入力します。ローマ字は自動的にひらがなに変換されます。エンターキーで送信します。LLMが回答を生成し、テキストで応答します。
 
 # 注意
-Face_kitは現在、EOL(生産終了)になっています。
+ - Face_kitは現在、EOL(生産終了)になっています。
+ - 所定の確率で、Module-LLMからの文字列が処理しきれず、表示から漏れるする不具合が残っています。
 
 # 参考
 https://github.com/GOROman/LLMCardputer<br>
