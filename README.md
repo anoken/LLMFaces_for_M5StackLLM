@@ -3,7 +3,7 @@
 ![image](https://github.com/user-attachments/assets/15309c27-53c9-4f46-a31a-ceca4d5adf76)
 
 手のひらサイズローカルLLMマシン"LLMFaces_for_M5StackLLM"は、
-@GOROman氏の#LLMCardputer をベースにFaceKITキーボードと日本語入力に対応しました。
+@GOROman氏のLLMCardputer をベースにFaceKITキーボードと日本語入力に対応しました。
 
 https://x.com/anoken2017/status/1905433935699738652
 
