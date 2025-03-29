@@ -1,4 +1,5 @@
 # LLMFaces_for_M5StackLLM
+[日本語](README.md) | [English](README_en.md)
 
 ![image](https://github.com/user-attachments/assets/15309c27-53c9-4f46-a31a-ceca4d5adf76)
 
